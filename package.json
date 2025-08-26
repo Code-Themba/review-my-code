@@ -1,0 +1,20 @@
+{
+  "name": "review_my_code",
+  "version": "1.0.0",
+  "description": "An application where users can post their code and get reviews or help.",
+  "license": "MIT",
+  "author": "Siyethemba Mnqotho",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server",
+    "dev": "nodemon server"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
