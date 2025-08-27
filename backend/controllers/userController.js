@@ -47,4 +47,21 @@ const registerUser = async (req, res) => {
   }
 };
 
-export { registerUser };
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+  const userExists = await User.findOne({ where: { email } });
+  if (!userExists) {
+    return res.status(404).json({
+      message: "Invalid credentials.",
+    });
+  }
+  try {
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({
+      message: "Something went wrong. Please try again",
+    });
+  }
+};
+
+export { registerUser, loginUser };
