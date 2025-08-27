@@ -1,21 +1,29 @@
 import { Sequelize, DataTypes } from "sequelize";
-const sequelize = new Sequelize(process.env.DB_URI);
+// import "dotenv";
+const sequelize = new Sequelize(
+  // process.env.DB_NAME,
+  // process.env.DB_USERNAME,
 
-const User = sequelize.define(
+  // process.env.DB_PASS,
+  "review_my_code",
+  "postgres",
+  "HopeDCoder1!",
+  {
+    dialect: "postgres",
+  }
+);
+
+export const User = sequelize.define(
   "User",
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrementIdentity: true,
+      autoIncrement: true,
     },
-    firstName: {
+    fullName: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    lastName: {
-      type: DataTypes.STRING,
-      allowNull: true,
     },
     username: {
       type: DataTypes.STRING,
