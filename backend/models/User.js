@@ -1,5 +1,6 @@
 import { Sequelize, DataTypes } from "sequelize";
 import dotenv from "dotenv";
+import bcrypt from "bcryptjs";
 dotenv.config();
 const sequelize = new Sequelize(
   process.env.DB_NAME,
@@ -41,7 +42,18 @@ export const User = sequelize.define(
     timestamps: true,
     createdAt: true,
     updatedAt: true,
+    hooks: {
+      beforeSave: async (user) => {
+        if (user.changed("password")) {
+          const salt = await bcrypt.genSalt(10);
+          user.password = await bcrypt.hash(user.password, salt);
+        }
+      },
+    },
   }
 );
 
-await User.sync();
+User.prototype.comparePassword = function (userPassword) {
+  return bcrypt.compare(userPassword, this.password);
+};
+await User.sync({ alter: true });
