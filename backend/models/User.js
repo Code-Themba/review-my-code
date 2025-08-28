@@ -1,13 +1,11 @@
 import { Sequelize, DataTypes } from "sequelize";
-// import "dotenv";
-const sequelize = new Sequelize(
-  // process.env.DB_NAME,
-  // process.env.DB_USERNAME,
+import dotenv from "dotenv";
+dotenv.config();
 
-  // process.env.DB_PASS,
-  "review_my_code",
-  "postgres",
-  "HopeDCoder1!",
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USERNAME,
+  process.env.DB_PASS,
   {
     dialect: "postgres",
   }
