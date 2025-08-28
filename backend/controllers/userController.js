@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import { User } from "../models/User.js";
 import { tokenGenerator } from "../utils/generator/tokenGenerator.js";
 
-const registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
   const { fullName, username, email, password, confirmPassword } = req.body;
 
   const userExists = await User.findOne({ where: { email } });
@@ -48,7 +48,7 @@ const registerUser = async (req, res) => {
   }
 };
 
-const loginUser = async (req, res) => {
+export const loginUser = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ where: { email } });
   if (!user) {
@@ -75,4 +75,11 @@ const loginUser = async (req, res) => {
   }
 };
 
-export { registerUser, loginUser };
+export const getUserProfile = async (req, res) => {
+  const user = {
+    id: req.user.id,
+    username: req.user.username,
+    email: req.user.email,
+  };
+  return res.status(200).json(user);
+};
