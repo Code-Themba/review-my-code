@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import { User } from "../models/User.js";
+import { tokenGenerator } from "../utils/generator/tokenGenerator.js";
 
 const registerUser = async (req, res) => {
   const { fullName, username, email, password, confirmPassword } = req.body;
@@ -62,6 +63,7 @@ const loginUser = async (req, res) => {
         message: "Invalid Credentials.",
       });
     }
+    tokenGenerator(res, user.id);
     return res.status(200).json({
       user: { id: user.id, username: user.username, email: user.email },
     });
