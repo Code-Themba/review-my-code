@@ -83,3 +83,11 @@ export const getUserProfile = async (req, res) => {
   };
   return res.status(200).json(user);
 };
+
+export const logoutUser = async (req, res) => {
+  res.cookie("authToken", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+  res.status(200).json({ message: "user logged out." });
+};

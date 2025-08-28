@@ -2,6 +2,7 @@ import express from "express";
 import {
   getUserProfile,
   loginUser,
+  logoutUser,
   registerUser,
 } from "../controllers/userController.js";
 import {
@@ -15,5 +16,6 @@ const router = express.Router();
 router.post("/signup", signupValidator, handleValidationErrors, registerUser);
 router.post("/signin", signInValidator, handleValidationErrors, loginUser);
 router.get("/me", protectRoutes, getUserProfile);
+router.get("/logout", protectRoutes, logoutUser);
 
 export default router;
