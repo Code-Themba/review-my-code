@@ -1,4 +1,4 @@
-import bcrypt from "bcryptjs";
+import asyncHandler from "express-async-handler";
 import { User } from "../models/User.js";
 import { tokenGenerator } from "../utils/generator/tokenGenerator.js";
 
@@ -35,7 +35,6 @@ export const registerUser = async (req, res) => {
     });
   } catch (err) {
     console.error(err.message);
-    // Handle validation/unique constraint errors
     if (
       err.name === "SequelizeValidationError" ||
       err.name === "SequelizeUniqueConstraintError"
@@ -51,14 +50,9 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ where: { email } });
-  if (!user) {
-    return res.status(404).json({
-      message: "Invalid credentials.",
-    });
-  }
   try {
     const isCorrectPassword = await user.comparePassword(password);
-    if (!isCorrectPassword) {
+    if (!user && !isCorrectPassword) {
       return res.status(401).json({
         message: "Invalid Credentials.",
       });
@@ -75,14 +69,14 @@ export const loginUser = async (req, res) => {
   }
 };
 
-export const getUserProfile = async (req, res) => {
+export const getUserProfile = asyncHandler(async (req, res) => {
   const user = {
     id: req.user.id,
     username: req.user.username,
     email: req.user.email,
   };
   return res.status(200).json(user);
-};
+});
 
 export const logoutUser = async (req, res) => {
   res.cookie("authToken", "", {
@@ -90,4 +84,48 @@ export const logoutUser = async (req, res) => {
     expires: new Date(0),
   });
   res.status(200).json({ message: "user logged out." });
+};
+
+export const deleteUserProfile = async (req, res) => {
+  const user = await User.findOne({ where: { id: req.user.id } });
+  try {
+    await user.destroy();
+    return res.status(200).json({
+      message: `User ${req.user.username} account deleted successfully.`,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Something went wrong.",
+    });
+  }
+};
+
+export const updateUserProfile = async (req, res) => {
+  const user = await User.findByPk(req.user.id);
+  const { fullName, email, username, password, confirmPassword } = req.body;
+
+  if (password) {
+    if (confirmPassword !== password) {
+      return res.status(400).json({
+        message: "Please ensure passwords match",
+      });
+    }
+    user.password = password;
+  }
+
+  if (fullName) user.fullName = fullName;
+
+  if (email) user.email = email;
+
+  if (username) user.username = username;
+
+  await user.save();
+  return res.status(200).json({
+    user: {
+      email: user.email,
+      fullName: user.fullName,
+      username: user.username,
+    },
+  });
 };

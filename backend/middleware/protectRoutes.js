@@ -1,7 +1,9 @@
-import { User } from "../models/User.js";
+import asyncHandler from "express-async-handler";
 import jwt from "jsonwebtoken";
 
-export const protectRoutes = async (req, res, next) => {
+import { User } from "../models/User.js";
+
+export const protectRoutes = asyncHandler(async (req, res, next) => {
   let token;
   token = req.cookies.authToken;
 
@@ -22,4 +24,4 @@ export const protectRoutes = async (req, res, next) => {
     res.status(401);
     throw new Error("Not authorized, no token.");
   }
-};
+});

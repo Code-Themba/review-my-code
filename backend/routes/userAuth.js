@@ -1,9 +1,11 @@
 import express from "express";
 import {
+  deleteUserProfile,
   getUserProfile,
   loginUser,
   logoutUser,
   registerUser,
+  updateUserProfile,
 } from "../controllers/userController.js";
 import {
   signInValidator,
@@ -17,5 +19,7 @@ router.post("/signup", signupValidator, handleValidationErrors, registerUser);
 router.post("/signin", signInValidator, handleValidationErrors, loginUser);
 router.get("/me", protectRoutes, getUserProfile);
 router.get("/logout", protectRoutes, logoutUser);
+router.put("/update-profile", protectRoutes, updateUserProfile);
+router.delete("/delete-account", protectRoutes, deleteUserProfile);
 
 export default router;
